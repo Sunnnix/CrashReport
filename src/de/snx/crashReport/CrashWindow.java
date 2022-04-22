@@ -15,10 +15,14 @@ public class CrashWindow extends JDialog {
 
 	private static final long serialVersionUID = 3530946542843279815L;
 
-	public CrashWindow(JFrame window, String title, String crashText, ModalityType modalityType) {
+	private Runnable onWindowClose;
+
+	public CrashWindow(JFrame window, String title, String crashText, ModalityType modalityType,
+			Runnable onWindowClose) {
 		super(window, title, modalityType);
 		initPanel(crashText);
 		initFrame(window);
+		this.onWindowClose = onWindowClose;
 	}
 
 	private void initPanel(String crashText) {
@@ -44,17 +48,15 @@ public class CrashWindow extends JDialog {
 	}
 
 	private void initFrame(JFrame window) {
-		this.addWindowListener(new WindowListener());
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				onWindowClose.run();
+			}
+		});
 		this.pack();
 		this.setLocationRelativeTo(window);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setVisible(true);
-	}
-
-	class WindowListener extends WindowAdapter {
-		@Override
-		public void windowClosed(WindowEvent e) {
-			System.exit(-1);
-		}
 	}
 }
