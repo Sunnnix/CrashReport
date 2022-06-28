@@ -87,7 +87,7 @@ public class CrashReport {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return list.toArray(String[]::new);
+		return list.stream().toArray(String[]::new);
 	}
 
 	private static String createCrashText(Throwable e, boolean showMessage, String[] crashMessages) {
